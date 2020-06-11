@@ -5,21 +5,9 @@
 </template>
 
 <script>
-// import axios from 'axios'
-import jsonp from 'jsonp'
 
 export default {
   name: 'App',
-  components: {
-    HelloWorld
-  },
-  mounted() {
-    let url = "/activity/servicetime";
-    jsonp(url, (err, res) => {
-      let result = res;
-      this.data = result;
-    })
-  }
 }
 </script>
 
