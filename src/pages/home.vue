@@ -1,7 +1,6 @@
 <template>
     <div>
         <!-- 分结构 -->
-        Home
         <nav-header></nav-header>
         <router-view></router-view>
         <nav-footer></nav-footer>
