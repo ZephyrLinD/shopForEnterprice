@@ -168,7 +168,7 @@ export default {
         // 金额过滤器
         currency(val) {
             if (!val) return "0.00";
-            return '￥' + val.topFixed(2) + '元';
+            return '￥' + val.toFixed(2) + '元';
         }
     },
     mounted() {
@@ -185,9 +185,12 @@ export default {
                     pageSize:6
                 }
             }).then((res)=>{
-                if(res.list.length >= 6) {
-                    this.cooksList = res.list.slice(0, 6);
+                console.log(res.list);
+                for(let i=0;i<res.list.length;i++) {
+                    console.log(res.list[i]);
+                    this.cooksList.push(res.list[i])
                 }
+                // this.cooksList = res.list;
             })
       },
       goToCart(){
@@ -236,29 +239,20 @@ export default {
                     display: inline-block;
                     width: 55px;
                     height: 55px;
+                    background-color:#FF6600;
                     a {
                         display: inline-block;
-                        width: 55px;
+                        width: 110px;
                         height: 55px;
-                        background-color: #FF6600;
+                        
                         &:before {
                             @include bgImg(55px, 55px, '/imgs/logo.png', 55px);
                             content: ' ';
-                            // display: inline-block;
-                            // width: 55px;
-                            // height: 55px;
-                            // background: url('/imgs/logo.png') no-repeat center;
-                            // background-size: 55px;
                             transition: margin .2s;
                         }
                         &:after {
                             @include bgImg(55px, 55px, '/imgs/z.png', 55px);
                             content: ' ';
-                            // display: inline-block;
-                            // width: 55px;
-                            // height: 55px;
-                            // background: url('/imgs/z.png') no-repeat center;
-                            // background-size: 55px;
                         }
                         &:hover:before {
                             margin-left: -55px;
