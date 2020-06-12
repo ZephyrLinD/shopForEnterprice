@@ -13,7 +13,11 @@
                     <div class="swiper-button-next" slot="button-next"></div>
                 </swiper>
             </div>
-            <div class="ads"></div>
+            <div class="ads-box">
+                <a :href="'/#/product/'+item.id" v-for="(item, index) in adsList" :key="index">
+                    <img :src="item.image" alt="">
+                </a>
+            </div>
             <div class="banner"></div>
             <div class="product-box"></div>
         </div>
@@ -74,6 +78,24 @@ export default {
                     id: '',
                     img: '/imgs/slider/slide-5.jpg'
                 }
+            ],
+            adsList: [
+                {
+                    id: 1,
+                    img: '/imgs/ads/ads-1.png'
+                },
+                {
+                    id: 2,
+                    img: '/imgs/ads/ads-2.png'
+                },
+                {
+                    id: 3,
+                    img: '/imgs/ads/ads-3.png'
+                },
+                {
+                    id: 4,
+                    img: '/imgs/ads/ads-4.png'
+                }
             ]
         }
     }
@@ -81,6 +103,7 @@ export default {
 </script>
 
 <style lang="scss">
+@import './../assets/scss/mixin.scss';
     .index {
         .swiper-box {
             .swiper-container {
@@ -88,11 +111,24 @@ export default {
                 // .swiper-button-prev{
                 //     left:274px;
                 // }
+                // 不做这个了
                 img {
                     width: 100%;
                     height: 100%;
                 }
             }
+        }
+        .ads-box {
+            @include flex();
+            margin-top: 14px;
+            margin-bottom: 31px;
+            a {
+                width: 296px;
+                height: 167px;
+            }
+        }
+        .banner {
+            margin-bottom: 50px;
         }
     }
 </style>
