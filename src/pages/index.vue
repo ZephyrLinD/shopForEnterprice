@@ -26,7 +26,7 @@
             <div class="product-box"></div>
         </div>
         <service-bar></service-bar>
-        <modal title="提示" sureText="查看购物车" btnType="1" modalType="middle" :showModal="true">
+        <modal title="提示" sureText="查看购物车" btnType="1" modalType="middle" :showModal="showModal">
             <template v-slot:body>
                 <p>商品添加成功</p>
             </template>
@@ -109,7 +109,8 @@ export default {
                     id: 47,
                     img: '/imgs/ads/ads-4.jpg'
                 }
-            ]
+            ],
+            showModal: false
         }
     }
 }

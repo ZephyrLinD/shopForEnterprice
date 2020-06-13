@@ -20,6 +20,11 @@
                 </div>
             </div>
         </div>
+        <modal title="提示" sureText="查看购物车" btnType="1" modalType="middle" :showModal="true">
+            <template v-slot:body>
+                <p>商品添加成功</p>
+            </template>
+        </modal>
     </div>
 </template>
 
