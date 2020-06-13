@@ -3,12 +3,27 @@
         <div class="product-box">
             <div class="wrapper">
                 <!-- banner 省略 -->
-                <div class="list-box">
+                <!-- <div class="list-box">
                     <div class="list" v-for="(arr, i) in itemsList" :key="i">
                         <div class="item" v-for="(item, j) in arr" :key="j">
                             <span :class="{'new-pro':j%2==0}">新品</span>
                             <div class="item-img">
                                 <img :src="item.mainImage" alt="">
+                            </div>
+                            <div class="item-info">
+                                <h3>{{item.name}}</h3>
+                                <p>{{item.subtitle}}</p>
+                                <p class="price" @click="addCart(item.id)">{{item.price}}元</p>
+                            </div>
+                        </div>
+                    </div>
+                </div> -->
+                <div class="list-box">
+                    <div class="list" v-for="(arr,i) in itemsList" v-bind:key="i">
+                        <div class="item" v-for="(item,j) in arr" v-bind:key="j">
+                            <span v-bind:class="{'new-pro':j%2==0}">新品</span>
+                            <div class="item-img">
+                                <img v-bind:src="item.mainImage" alt="">
                             </div>
                             <div class="item-info">
                                 <h3>{{item.name}}</h3>
@@ -20,7 +35,16 @@
                 </div>
             </div>
         </div>
-        <modal title="提示" sureText="查看购物车" btnType="1" modalType="middle" :showModal="true">
+        <service-bar></service-bar>
+        <modal 
+            title="提示" 
+            sureText="查看购物车" 
+            btnType="1" 
+            modalType="middle" 
+            v-bind:showModal="showModal"
+            v-on:submit="goToCart"
+            v-on:cancel="showModal=false"
+        >
             <template v-slot:body>
                 <p>商品添加成功</p>
             </template>
@@ -30,8 +54,10 @@
 
 <script>
     import Modal from './../components/Modal';
+    import ServiceBar from './../components/ServiceBar'
     export default {
         components: {
+            ServiceBar,
             Modal
         },
         name: 'all',
@@ -61,6 +87,13 @@
                     //     }
                     // }
                 })
+                
+            },
+            addCart() {
+                this.showModel = true;
+            },
+            goToCart() {
+                this.$router.push('cart')
             }
         }
     }

@@ -2,6 +2,7 @@ import Vue from 'vue'
 import router from './router'
 import axios from 'axios'
 import VueAxios from 'vue-axios'
+import VueCookie from 'vue-cookie'
 import App from './App.vue'
 
 // Mock 开关
@@ -27,10 +28,12 @@ axios.interceptors.response.use(function(response) {
     window.location.href = '/#/login';
   } else {
     alert(res.msg);
+    return Promise.reject(res);
   }
 });
 
 Vue.use(VueAxios, axios);
+Vue.use(VueCookie);
 Vue.config.productionTip = false
 
 new Vue({
