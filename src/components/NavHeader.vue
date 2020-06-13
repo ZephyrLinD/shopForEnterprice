@@ -7,9 +7,9 @@
                 </div>
                 <div class="topbar-user">
                     <a href="javascript:;" v-if="username">{{username}}</a>
-                    <a href="javascript:;" v-if="!username">登录</a>
+                    <a href="javascript:;" v-if="!username" @click="login">登录</a>
                     <a href="javascript:;" v-if="username">我的订单</a>
-                    <a href="javascript:;" v-if="!username">注册</a>
+                    <a href="javascript:;" v-if="!username" @click="register">注册</a>
                     <a href="javascript:;" class="my-cart" @click="goToCart"><span class="icon-cart"></span>购物车</a>
                 </div>
             </div>
@@ -165,7 +165,7 @@ export default {
     name: 'nav-header',
     data() {
         return {
-            username: 'zephyr',
+            username: this.$store.state.username,
             cooksList:[]
         }
     },
@@ -182,6 +182,9 @@ export default {
     methods: {
         login() {
             this.$router.push('/login');
+        },
+        register() {
+            this.$router.push('/login')
         },
         getProductList(){
             this.axios.get('/products',{
