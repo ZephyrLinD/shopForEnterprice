@@ -20,6 +20,11 @@
                     <a href="/#/index"></a>
                 </div>
                 <div class="header-menu">
+                    
+                    <div class="item-menu">
+                        <span><a href="/#/all" class="all">全部商品</a></span>
+                    </div>
+
                     <div class="item-menu">
                         <span>厨具</span>
                         <div class="children">
@@ -185,12 +190,13 @@ export default {
                     pageSize:6
                 }
             }).then((res)=>{
-                console.log(res.list);
-                for(let i=0;i<res.list.length;i++) {
-                    console.log(res.list[i]);
-                    this.cooksList.push(res.list[i])
-                }
-                // this.cooksList = res.list;
+                // debug
+                // console.log(res.list);
+                // for(let i=0;i<res.list.length;i++) {
+                //     console.log(res.list[i]);
+                //     this.cooksList.push(res.list[i])
+                // }
+                this.cooksList = res.list;
             })
       },
       goToCart(){
@@ -279,6 +285,12 @@ export default {
                             .children {
                                 height: 220px;
                                 opacity: 1;
+                            }
+                        }
+                        .all {
+                            color: #333;
+                            &:hover {
+                                color: $colorA;
                             }
                         }
                         .children {

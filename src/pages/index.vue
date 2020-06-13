@@ -15,19 +15,31 @@
             </div>
             <div class="ads-box">
                 <a :href="'/#/product/'+item.id" v-for="(item, index) in adsList" :key="index">
-                    <img :src="item.image" alt="">
+                    <img :src="item.img" alt="">
                 </a>
             </div>
-            <div class="banner"></div>
+            <div class="banner">
+                <a href="/#/product/30">
+                    <img src="/imgs/banner-1.png" alt="">
+                </a>
+            </div>
             <div class="product-box"></div>
         </div>
         <service-bar></service-bar>
+        <modal title="提示" sureText="查看购物车" btnType="1" modalType="middle" :showModal="true">
+            <template v-slot:body>
+                <p>商品添加成功</p>
+            </template>
+        </modal>
+
     </div>
 </template>
 
 
 <script>
 import ServiceBar from './../components/ServiceBar'
+import Modal from './../components/Modal'
+
 import { swiper, swiperSlide } from 'vue-awesome-swiper'
 import 'swiper/css/swiper.css'
 
@@ -36,7 +48,8 @@ export default {
     components: {
         swiper,
         swiperSlide,
-        ServiceBar
+        ServiceBar,
+        Modal
     },
     data() {
         return {
@@ -81,20 +94,20 @@ export default {
             ],
             adsList: [
                 {
-                    id: 1,
+                    id: 33,
                     img: '/imgs/ads/ads-1.png'
                 },
                 {
-                    id: 2,
-                    img: '/imgs/ads/ads-2.png'
+                    id: 48,
+                    img: '/imgs/ads/ads-2.jpg'
                 },
                 {
-                    id: 3,
+                    id: 45,
                     img: '/imgs/ads/ads-3.png'
                 },
                 {
-                    id: 4,
-                    img: '/imgs/ads/ads-4.png'
+                    id: 47,
+                    img: '/imgs/ads/ads-4.jpg'
                 }
             ]
         }

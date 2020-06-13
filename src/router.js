@@ -10,6 +10,7 @@ import OrderConfirm from './pages/orderConfirm'
 import OrderList from './pages/orderList'
 import OrderPay from './pages/orderPay'
 import Alipay from './pages/alipay'
+import All from './pages/all'
 
 Vue.use(Router);
 
@@ -36,6 +37,10 @@ export default new Router({
                     path: '/detail/:id',
                     name: 'detail',
                     component: Detail
+                }, {
+                    path: '/all',
+                    name: 'all',
+                    component: All
                 }
             ]
         }, {
