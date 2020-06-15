@@ -34,7 +34,7 @@
               <div class="detail-info">
                 <ul>
                   <li v-for="(item,index) in orderDetail" :key="index">
-                    <img v-lazy="item.productImage"/>{{item.productName}}
+                    <img v-bind:img="item.detailPic"/>{{item.name}}
                   </li>
                 </ul>
               </div>
@@ -102,10 +102,10 @@ export default{
   },
   methods:{
     getOrderDetail(){
-      this.axios.get(`/orders/${this.orderId}`).then((res)=>{
-        let item = res.shippingVo;
-        this.addressInfo = `${item.receiverName} ${item.receiverMobile} ${item.receiverProvince} ${item.receiverCity} ${item.receiverDistrict} ${item.receiverAddress}`;
-        this.orderDetail = res.orderItemVoList;
+      this.axios.get(`/order/${this.orderId}`).then((res)=>{
+        let item = res.address;
+        this.addressInfo = `${item.name} ${item.phone} ${item.province} ${item.city} ${item.district} ${item.address}`;
+        this.orderDetail = res.products;
         this.payment = res.payment;
       })
     },
@@ -113,7 +113,7 @@ export default{
       if(payType == 1){
         window.open('/#/order/alipay?orderId='+this.orderId,'_blank');
       }else{
-        this.axios.post('/pay',{
+        this.axios.post('http://mi.futurefe.com/api/pay',{
           orderId:this.orderId,
           orderName:'Vue高仿小米商城',
           amount:0.01,//单位元

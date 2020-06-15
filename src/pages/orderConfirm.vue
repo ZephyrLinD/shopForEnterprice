@@ -31,9 +31,9 @@
             <h2 class="addr-title">收货地址</h2>
             <div class="addr-list clearfix">
               <div class="addr-info" :class="{'checked':index == checkIndex}" @click="checkIndex=index" v-for="(item,index) in list" :key="index">
-                <h2>{{item.receiverName}}</h2>
-                <div class="phone">{{item.receiverMobile}}</div>
-                <div class="street">{{item.receiverProvince + ' ' + item.receiverCity + ' ' + item.receiverDistrict + ' ' + item.receiverAddress}}</div>
+                <h2>{{item.name}}</h2>
+                <div class="phone">{{item.phone}}</div>
+                <div class="street">{{item.province + ' ' + item.city + ' ' + item.district + ' ' + item.address}}</div>
                 <div class="action">
                   <a href="javascript:;" class="fl" @click="delAddress(item)">
                     <svg class="icon icon-del">
@@ -58,11 +58,11 @@
             <ul>
               <li v-for="(item,index) in cartList" :key="index">
                 <div class="good-name">
-                  <img v-lazy="item.productMainImage" alt="">
-                  <span>{{item.productName + ' ' + item.productSubtitle}}</span>
+                  <img v-lazy="item.detailPic" alt="">
+                  <span>{{item.name + ' ' + item.description}}</span>
                 </div>
-                <div class="good-price">{{item.productPrice}}元x{{item.quantity}}</div>
-                <div class="good-total">{{item.productTotalPrice}}元</div>
+                <div class="good-price">{{item.price}} 元 x {{item.count}}</div>
+                <div class="good-total">{{item.price * item.count}} 元</div>
               </li>
             </ul>
           </div>
@@ -114,34 +114,34 @@
       <template v-slot:body>
         <div class="edit-wrap">
           <div class="item">
-            <input type="text" class="input" placeholder="姓名" v-model="checkedItem.receiverName">
-            <input type="text" class="input" placeholder="手机号" v-model="checkedItem.receiverMobile">
+            <input type="text" class="input" placeholder="姓名" v-model="checkedItem.name">
+            <input type="text" class="input" placeholder="手机号" v-model="checkedItem.phone">
           </div>
           <div class="item">
-            <select name="province" v-model="checkedItem.receiverProvince">
+            <select name="province" v-model="checkedItem.province">
               <option value="北京">北京</option>
               <option value="天津">天津</option>
               <option value="河北">河北</option>
             </select>
-            <select name="city" v-model="checkedItem.receiverCity">
+            <select name="city" v-model="checkedItem.city">
               <option value="北京">北京</option>
               <option value="天津">天津</option>
               <option value="河北">石家庄</option>
             </select>
-            <select name="district" v-model="checkedItem.receiverDistrict">
-              <option value="北京">昌平区</option>
-              <option value="天津">海淀区</option>
-              <option value="河北">东城区</option>
-              <option value="天津">西城区</option>
-              <option value="河北">顺义区</option>
-              <option value="天津">房山区</option>
+            <select name="district" v-model="checkedItem.district">
+              <option value="昌平区">昌平区</option>
+              <option value="海淀区">海淀区</option>
+              <option value="东城区">东城区</option>
+              <option value="西城区">西城区</option>
+              <option value="顺义区">顺义区</option>
+              <option value="房山区">房山区</option>
             </select>
           </div>
           <div class="item">
-            <textarea name="street" v-model="checkedItem.receiverAddress"></textarea>
+            <textarea name="address" v-model="checkedItem.address"></textarea>
           </div>
           <div class="item">
-            <input type="text" class="input" placeholder="邮编" v-model="checkedItem.receiverZip">
+            <input type="text" name="zip" class="input" placeholder="邮编" v-model="checkedItem.zip">
           </div>
         </div>
       </template>
@@ -162,6 +162,7 @@
 <script>
 import OrderHeader from './../components/OrderHeader'
 import Modal from './../components/Modal'
+import Qs from 'qs'
 export default{
   name:'order-confirm',
   data(){
@@ -187,8 +188,8 @@ export default{
   },
   methods:{
     getAddressList(){
-      this.axios.get('/shippings').then((res)=>{
-        this.list = res.list;
+      this.axios.get('/address').then((res)=>{
+        this.list = res;
       })
     },
     // 打开新增地址弹框
@@ -213,26 +214,26 @@ export default{
       let {checkedItem,userAction} = this;
       let method,url,params={};
       if(userAction == 0){
-        method = 'post',url = '/shippings';
+        method = 'post',url = '/address';
       }else if(userAction == 1){
-        method = 'put',url = `/shippings/${checkedItem.id}`;
+        method = 'put',url = `/address/${checkedItem.id}`;
       }else {
-        method = 'delete',url = `/shippings/${checkedItem.id}`;
+        method = 'delete',url = `/address/${checkedItem.id}`;
       }
       if(userAction == 0 || userAction ==1){
-        let { receiverName, receiverMobile, receiverProvince, receiverCity, receiverDistrict, receiverAddress, receiverZip} = checkedItem;
+        let { name, phone, province, city, district, address, zip} = checkedItem;
         let errMsg='';
-        if(!receiverName){
+        if(!name){
           errMsg = '请输入收货人名称';
-        }else if(!receiverMobile || !/\d{11}/.test(receiverMobile)){
+        }else if(!phone || !/\d{11}/.test(phone)){
           errMsg = '请输入正确格式的手机号';
-        }else if(!receiverProvince){
+        }else if(!province){
           errMsg = '请选择省份';
-        }else if(!receiverCity){
+        }else if(!city){
           errMsg = '请选择对应的城市';
-        }else if(!receiverAddress || !receiverDistrict){
+        }else if(!address || !district){
           errMsg = '请输入收货地址';
-        }else if(!/\d{6}/.test(receiverZip)){
+        }else if(!/\d{6}/.test(zip)){
           errMsg = '请输入六位邮编';
         }
         if(errMsg){
@@ -240,18 +241,18 @@ export default{
           return;
         }
         params = {
-          receiverName,
-          receiverMobile,
-          receiverProvince,
-          receiverCity,
-          receiverDistrict,
-          receiverAddress,
-          receiverZip
+          name: name,
+          phone: phone,
+          province: province,
+          city: city,
+          district: district,
+          address: address,
+          zip: zip
         }
       }
-      this.axios[method](url,params).then(()=>{
+      this.axios[method](url,Qs.stringify(params)).then((res)=>{
         this.closeModal();
-        this.getAddressList();
+        this.list = res;
         this.$message.success('操作成功');
       });
     },
@@ -263,11 +264,15 @@ export default{
     },
     getCartList(){
       this.axios.get('/carts').then((res)=>{
-        let list = res.cartProductVoList;//获取购物车中所有商品数据
-        this.cartTotalPrice = res.cartTotalPrice;//商品总金额
-        this.cartList = list.filter(item=>item.productSelected);
+        let list = res;//获取购物车中所有商品数据
+        let totalPrice = 0;
+        res.forEach(item => {
+            totalPrice += item.price * item.count;
+        });
+        this.cartTotalPrice = totalPrice;//商品总金额
+        this.cartList = list.filter(item=>item.selected);
         this.cartList.map((item)=>{
-          this.count += item.quantity;
+          this.count += item.count;
         })
       })
     },
@@ -278,13 +283,13 @@ export default{
         this.$message.error('请选择一个收货地址');
         return;
       }
-      this.axios.post('/orders',{
-        shippingId:item.id
-      }).then((res)=>{
+      this.axios.post('/order/submit',Qs.stringify({
+        addressId:item.id
+      })).then((res)=>{
         this.$router.push({
           path:'/order/pay',
           query:{
-            orderNo:res.orderNo
+            orderNo:res
           }
         })
       })

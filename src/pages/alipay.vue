@@ -23,7 +23,7 @@
     },
     methods:{
       paySubmit(){
-        this.axios.post('/pay',{
+        this.axios.post('http://mi.futurefe.com/api/pay',{
           orderId:this.orderId,
           orderName:'Vue高仿小米商城',
           amount:0.01,//单位元

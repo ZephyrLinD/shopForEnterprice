@@ -7,7 +7,7 @@
       <div class="container">
         <div class="login-form">
           <h3>
-            <span class="checked">帐号登录</span><span class="sep-line">|</span><span>扫码登录</span>
+            <span class="checked">帐号登录</span><span class="sep-line">|</span><span>用户注册</span>
           </h3>
           <div class="input">
             <input type="text" placeholder="请输入帐号" v-model="username">
@@ -19,25 +19,26 @@
             <a href="javascript:;" class="btn" @click="login">登录</a>
           </div>
           <div class="tips">
-            <div class="sms" @click="register">手机短信登录/注册</div>
-            <div class="reg">立即注册<span>|</span>忘记密码？</div>
+            <div class="sms" @click="register">立即注册</div>
+            <div class="reg">忘记密码？</div>
           </div>
         </div>
       </div>
     </div>
     <div class="footer">
       <div class="footer-link">
-        <a href="https://www.imooc.com/u/1343480" target="_blank">河畔一角主页</a><span>|</span>
-        <a href="https://coding.imooc.com/class/113.html" target="_blank">Vue全栈课程</a><span>|</span>
-        <a href="https://coding.imooc.com/class/236.html" target="_blank">React全家桶课程</a><span>|</span>
-        <a href="https://coding.imooc.com/class/343.html" target="_blank">微信支付专项课程（H5+小程序/云+Node+MongoDB）</a>
+        <a href="https://www.imooc.com/u/1343480" target="_blank">关于我们</a><span>|</span>
+        <a href="https://coding.imooc.com/class/113.html" target="_blank">帮助中心</a><span>|</span>
+        <a href="https://coding.imooc.com/class/236.html" target="_blank">售后服务</a><span>|</span>
+        <a href="https://coding.imooc.com/class/343.html" target="_blank">关于货源</a>
       </div>
-      <p class="copyright">Copyright ©2019 mi.futurefe.com All Rights Reserved.</p>
+      <p class="copyright">Copyright ©2019 work.zephyrl.co All Rights Reserved.</p>
     </div>
   </div>
 </template>
 <script>
 import { mapActions } from 'vuex';
+import Qs from 'qs';
 export default {
   name: 'login',
   data(){
@@ -50,10 +51,10 @@ export default {
   methods:{
     login(){
       let { username,password } = this;
-      this.axios.post('/user/login',{
+      this.axios.post('/login',Qs.stringify({
         username,
         password
-      }).then((res)=>{
+      })).then((res)=>{
         this.$cookie.set('userId',res.id,{expires:'Session'});
         // this.$store.dispatch('saveUserName',res.username);
         this.saveUserName(res.username);
@@ -67,7 +68,7 @@ export default {
     },
     ...mapActions(['saveUserName']),
     register(){
-      this.axios.post('/user/register',{
+      this.axios.post('/register',{
         username:'admin1',
         password:'admin1',
         email:'admin1@163.com'
@@ -88,7 +89,7 @@ export default {
     }
   }
   .wrapper{
-    background:url('/imgs/login-bg.jpg') no-repeat center;
+    background:url('/imgs/login-bg.png') no-repeat center;
     .container{
       height:576px;
       .login-form{

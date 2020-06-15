@@ -4,41 +4,30 @@
     <div class="wrapper">
       <div class="container clearfix">
         <div class="swiper">
-          <swiper :options="swiperOption">
-              <swiper-slide><img src="/imgs/detail/phone-1.jpg" alt=""></swiper-slide>
-              <swiper-slide><img src="/imgs/detail/phone-2.jpg" alt=""></swiper-slide>
-              <swiper-slide><img src="/imgs/detail/phone-3.jpg" alt=""></swiper-slide>
-              <swiper-slide><img src="/imgs/detail/phone-4.jpg" alt=""></swiper-slide>
-              <!-- Optional controls -->
+          <swiper :options="swiperOption" style="margin: 40px"> 
+              <swiper-slide v-for="(item,index) in product.detailPic" :key="index">
+                  <img v-bind:src=item alt="">
+                </swiper-slide>
               <div class="swiper-pagination"  slot="pagination"></div>
           </swiper>
         </div>
         <div class="content">
           <h2 class="item-title">{{product.name}}</h2>
-          <p class="item-info">相机全新升级 / 960帧超慢动作 / 手持超级夜景 / 全球首款双频GPS / 骁龙845处理器 / 红<br/>外人脸解锁 / AI变焦双摄 / 三星 AMOLED 屏</p>
-          <div class="delivery">小米自营</div>
-          <div class="item-price">{{product.price}}元<span class="del">1999元</span></div>
+          <p class="item-info">{{product.description}}</p>
+          <div class="delivery">自营</div>
+          <div class="item-price">
+            {{product.price}}元
+            <span class="del">{{product.oldPrice}}元</span>
+          </div>
           <div class="line"></div>
           <div class="item-addr">
             <i class="icon-loc"></i>
             <div class="addr">北京 北京市 朝阳区 安定门街道</div>
             <div class="stock">有现货</div>
           </div>
-          <div class="item-version clearfix">
-            <h2>选择版本</h2>
-            <div class="phone fl" :class="{'checked':version==1}" @click="version=1">6GB+64GB 全网通</div>
-            <div class="phone fr" :class="{'checked':version==2}" @click="version=2">4GB+64GB 移动4G</div>
-          </div>
-          <div class="item-color">
-            <h2>选择颜色</h2>
-            <div class="phone checked">
-              <span class="color"></span>
-              深空灰
-            </div>
-          </div>
           <div class="item-total">
             <div class="phone-info clearfix">
-              <div class="fl">{{product.name}} {{version==1?'6GB+64GB 全网通':'4GB+64GB 移动4G'}} 深灰色</div>
+              <div class="fl">{{product.name}} {{product.description}}</div>
               <div class="fr">{{product.price}}元</div>
             </div>
             <div class="phone-total">总计：{{product.price}}元</div>
@@ -64,6 +53,7 @@
 import { Swiper, SwiperSlide } from 'vue-awesome-swiper'
 import ProductParam from './../components/ProductParam'
 import ServiceBar from './../components/ServiceBar';
+import Qs from 'qs'
 export default{
   name:'detail',
   data(){
@@ -97,10 +87,11 @@ export default{
       })
     },
     addCart(){
-      this.axios.post('/carts',{
+      this.axios.post('/submit', Qs.stringify({
         productId:this.id,
-        selected: true
-      }).then((res={cartProductVoList:0})=>{
+        count: 1
+      })).then((res={cartProductVoList:0})=>{
+        this.$message.success('添加成功！');
         this.$store.dispatch('saveCartCount',res.cartTotalQuantity);
         // this.$router.push('/cart');
       });

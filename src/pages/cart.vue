@@ -19,21 +19,21 @@
           <ul class="cart-item-list">
             <li class="cart-item" v-for="(item,index) in list" v-bind:key="index">
               <div class="item-check">
-                <span class="checkbox" v-bind:class="{'checked':item.productSelected}"  @click="updateCart(item)"></span>
+                <span class="checkbox" v-bind:class="{'checked':item.selected}"  @click="updateCart(item)"></span>
               </div>
               <div class="item-name">
-                <img v-lazy="item.productMainImage" alt="">
-                <span>{{item.productName + ' , ' + item.productSubtitle}}</span>
+                <img v-bind:src="item.detailPic" alt="">
+                <span>{{item.name}}</span>
               </div>
-              <div class="item-price">{{item.productPrice}}</div>
+              <div class="item-price">{{item.price}}</div>
               <div class="item-num">
                 <div class="num-box">
                   <a href="javascript:;" @click="updateCart(item,'-')">-</a>
-                  <span>{{item.quantity}}</span>
+                  <span>{{item.count}}</span>
                   <a href="javascript:;"  @click="updateCart(item,'+')">+</a>
                 </div>
               </div>
-              <div class="item-total">{{item.productTotalPrice}}</div>
+              <div class="item-total">{{item.count * item.price}}</div>
               <div class="item-del" @click="delProduct(item)"></div>
             </li>
           </ul>
@@ -58,6 +58,7 @@
   import OrderHeader from './../components/OrderHeader'
   import ServiceBar from './../components/ServiceBar'
   import NavFooter from './../components/NavFooter'
+  import Qs from 'qs'
   export default{
     name:'index',
     components:{
@@ -68,7 +69,7 @@
     data(){
       return {
         list:[],//商品列表
-        allChecked:false,//是否全选
+        allChecked:true,//是否全选
         cartTotalPrice:0,//商品总金额
         checkedNum:0//选中商品数量
       }
@@ -85,8 +86,8 @@
       },
       // 更新购物车数量和购物车单选状态
       updateCart(item,type){
-        let quantity = item.quantity,
-            selected = item.productSelected;
+        let quantity = item.count,
+            selected = item.selected;
         if(type == '-'){
           if(quantity == 1){
             this.$message.warning('商品至少保留一件');
@@ -94,24 +95,20 @@
           }
           --quantity;
         }else if(type == '+'){
-          if(quantity > item.productStock){
-            this.$message.warning('购买数量不能超过库存数量');
-            return;
-          }
           ++quantity;
         }else{
-          selected = !item.productSelected;
+          selected = !item.selected;
         }
-        this.axios.put(`/carts/${item.productId}`,{
-          quantity,
+        this.axios.put(`/cart/${item.id}`,Qs.stringify({
+          count: quantity,
           selected
-        }).then((res)=>{
+        })).then((res)=>{
           this.renderData(res);
         })
       },
       // 删除购物车商品
       delProduct(item){
-        this.axios.delete(`/carts/${item.productId}`).then((res)=>{
+        this.axios.delete(`/cart/${item.id}`).then((res)=>{
           this.$message.success('删除成功');
           this.renderData(res);
         });
@@ -125,14 +122,18 @@
       },
       // 公共赋值
       renderData(res){
-        this.list = res.cartProductVoList || [];
-        this.allChecked = res.selectedAll;
-        this.cartTotalPrice = res.cartTotalPrice;
-        this.checkedNum = this.list.filter(item=>item.productSelected).length;
+        this.list = res || [];
+        this.allChecked = !this.allChecked;
+        let totalPrice = 0;
+        res.forEach(item => {
+            totalPrice += item.price * item.count;
+        });
+        this.cartTotalPrice = totalPrice;
+        this.checkedNum = this.list.filter(item=>item.selected).length;
       },
       // 购物车下单
       order(){
-        let isCheck = this.list.every(item=>!item.productSelected);
+        let isCheck = this.list.every(item=>!item.selected);
         if(isCheck){
           this.$message.warning('请选择一件商品');
         }else{

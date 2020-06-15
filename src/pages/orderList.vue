@@ -12,13 +12,9 @@
           <div class="order" v-for="(order,index) in list" :key="index">
             <div class="order-title">
               <div class="item-info fl">
-                {{order.createTime}}
+                订单号：{{order.number}}
                 <span>|</span>
-                {{order.receiverName}}
-                <span>|</span>
-                订单号：{{order.orderNo}}
-                <span>|</span>
-                {{order.paymentTypeDesc}}
+                <span v-if="order.status">已支付</span><span v-else>未支付</span>
               </div>
               <div class="item-money fr">
                 <span>应付金额：</span>
@@ -28,13 +24,13 @@
             </div>
             <div class="order-content clearfix">
               <div class="good-box fl">
-                <div class="good-list" v-for="(item,i) in order.orderItemVoList" :key="i">
-                  <div class="good-img">
-                    <img v-lazy="item.productImage" alt="">
+                <div class="good-list" v-for="(item,i) in order.products" :key="i">
+                  <div class="good-img" style="margin-right: 10px">
+                    <img v-bind:src="item.detailPic[0]" alt="">
                   </div>
                   <div class="good-name">
-                    <div class="p-name">{{item.productName}}</div>
-                    <div class="p-money">{{item.totalPrice + 'X' + item.quantity}}元</div>
+                    <div class="p-name">{{item.name}}</div>
+                    <div class="p-money">{{item.price}}元</div>
                   </div>
                 </div>
               </div>
@@ -109,14 +105,10 @@
       getOrderList(){
         this.loading = true;
         this.busy = true;
-        this.axios.get('/orders',{
-          params:{
-            pageSize:10,
-            pageNum:this.pageNum
-          }
+        this.axios.get('/order',{
         }).then((res)=>{
           this.loading = false;
-          this.list = this.list.concat(res.list);
+          this.list = this.list.concat(res);
           this.total = res.total;
           this.showNextPage = res.hasNextPage;
           this.busy = false;

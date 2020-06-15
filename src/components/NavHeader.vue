@@ -3,10 +3,7 @@
     <div class="nav-topbar">
       <div class="container">
         <div class="topbar-menu">
-          <a href="javascript:;">小米商城</a>
-          <a href="javascript:;">MUI</a>
-          <a href="javascript:;">云服务</a>
-          <a href="javascript:;">协议规则</a>
+            <a href="javascript:;">居家商城</a>
         </div>
         <div class="topbar-user">
           <a href="javascript:;" v-if="username">{{username}}</a>
@@ -24,13 +21,18 @@
         </div>
         <div class="header-menu">
           <div class="item-menu">
-            <span>小米手机</span>
+            <span>
+              <a href="/#/all" class="all">全部商品</a>
+            </span>
+          </div>
+          <div class="item-menu">
+            <span>厨具</span>
             <div class="children">
               <ul>
                 <li class="product" v-for="(item,index) in phoneList" :key="index">
-                  <a v-bind:href="'/#/product/'+item.id" target="_blank">
+                  <a v-bind:href="'/#/detail/'+item.id">
                     <div class="pro-img">
-                      <img v-lazy="item.mainImage" :alt="item.subtitle">
+                      <img v-lazy="item.detailPic[0]" :alt="item.subtitle">
                     </div>
                     <div class="pro-name">{{item.name}}</div>
                     <div class="pro-price">{{item.price | currency}}</div>
@@ -40,64 +42,32 @@
             </div>
           </div>
           <div class="item-menu">
-            <span>RedMi红米</span>
-          </div>
-          <div class="item-menu">
-            <span>电视</span>
+            <span>灯具</span>
             <div class="children">
               <ul>
-                <li class="product">
-                  <a href="" target="_blank">
+                <li class="product" v-for="(item,index) in phoneList2" :key="index">
+                  <a v-bind:href="'/#/detail/'+item.id">
                     <div class="pro-img">
-                      <img v-lazy="'/imgs/nav-img/nav-3-1.jpg'" alt="">
+                      <img v-lazy="item.detailPic[0]" :alt="item.subtitle">
                     </div>
-                    <div class="pro-name">小米壁画电视 65英寸</div>
-                    <div class="pro-price">6999元</div>
+                    <div class="pro-name">{{item.name}}</div>
+                    <div class="pro-price">{{item.price | currency}}</div>
                   </a>
                 </li>
-                <li class="product">
-                  <a href="" target="_blank">
+              </ul>
+            </div>
+          </div>
+          <div class="item-menu">
+            <span>生活日用</span>
+            <div class="children">
+              <ul>
+                <li class="product" v-for="(item,index) in phoneList3" :key="index">
+                  <a v-bind:href="'/#/detail/'+item.id">
                     <div class="pro-img">
-                      <img v-lazy="'/imgs/nav-img/nav-3-2.jpg'" alt="">
+                      <img v-lazy="item.detailPic[0]" :alt="item.subtitle">
                     </div>
-                    <div class="pro-name">小米全面屏电视E55A</div>
-                    <div class="pro-price">1999元</div>
-                  </a>
-                </li>
-                <li class="product">
-                  <a href="" target="_blank">
-                    <div class="pro-img">
-                      <img v-lazy="'/imgs/nav-img/nav-3-3.png'" alt="">
-                    </div>
-                    <div class="pro-name">小米电视4A 32英寸</div>
-                    <div class="pro-price">699元</div>
-                  </a>
-                </li>
-                <li class="product">
-                  <a href="" target="_blank">
-                    <div class="pro-img">
-                      <img v-lazy="'/imgs/nav-img/nav-3-4.jpg'" alt="">
-                    </div>
-                    <div class="pro-name">小米电视4A 55英寸</div>
-                    <div class="pro-price">1799元</div>
-                  </a>
-                </li>
-                <li class="product">
-                  <a href="" target="_blank">
-                    <div class="pro-img">
-                      <img v-lazy="'/imgs/nav-img/nav-3-5.jpg'" alt="">
-                    </div>
-                    <div class="pro-name">小米电视4A 65英寸</div>
-                    <div class="pro-price">2699元</div>
-                  </a>
-                </li>
-                <li class="product">
-                  <a href="" target="_blank">
-                    <div class="pro-img">
-                      <img v-lazy="'/imgs/nav-img/nav-3-6.png'" alt="">
-                    </div>
-                    <div class="pro-name">查看全部</div>
-                    <div class="pro-price">查看全部</div>
+                    <div class="pro-name">{{item.name}}</div>
+                    <div class="pro-price">{{item.price | currency}}</div>
                   </a>
                 </li>
               </ul>
@@ -120,16 +90,18 @@
     name:'nav-header',
     data(){
       return {
-        phoneList:[]
+        phoneList:[],
+        phoneList2: [],
+        phoneList3: []
       }
     },
     computed:{
       /*username(){
         return this.$store.state.username;
-      },
+      },*/
       cartCount(){
         return this.$store.state.cartCount;
-      }*/
+      },
       ...mapState(['username','cartCount'])
     },
     filters:{
@@ -140,6 +112,8 @@
     },
     mounted(){
       this.getProductList();
+      this.getProductList2();
+      this.getProductList3();
       let params = this.$route.params;
       if(params && params.from == 'login'){
         this.getCartCount();
@@ -152,11 +126,28 @@
       getProductList(){
         this.axios.get('/products',{
           params:{
-            categoryId:'100012',
-            pageSize:6
+            type:'1',
           }
         }).then((res)=>{
           this.phoneList = res.list;
+        })
+      },
+      getProductList2(){
+        this.axios.get('/products',{
+          params:{
+            type:'2',
+          }
+        }).then((res)=>{
+          this.phoneList2 = res.list;
+        })
+      },
+      getProductList3(){
+        this.axios.get('/products',{
+          params:{
+            type:'3',
+          }
+        }).then((res)=>{
+          this.phoneList3 = res.list;
         })
       },
       getCartCount(){
@@ -165,7 +156,7 @@
         })
       },
       logout(){
-        this.axios.post('/user/logout').then(()=>{
+        this.axios.post('/logout').then(()=>{
           this.$message.success('退出成功');
           this.$cookie.set('userId','',{expires:'-1'});
           this.$store.dispatch('saveUserName','');

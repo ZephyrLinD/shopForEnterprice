@@ -21,6 +21,10 @@ export default new Router({
           name: 'product',
           component: () => import('./pages/product.vue')
         }, {
+          path: '/all',
+          name: 'all',
+          component: () => import('./pages/all.vue')
+        }, {
           path: '/detail/:id',
           name: 'detail',
           component: () => import('./pages/detail.vue')
